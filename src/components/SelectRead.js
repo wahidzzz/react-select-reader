@@ -1,10 +1,20 @@
 import React from 'react';
+import Popup from 'reactjs-popup';
 import "./SelectRead.css"
 
 const synth=window.speechSynthesis;
-
+const botReply=[
+            "Please select a text for me to read",
+            "Beep bop beep bop, did not find any text to read",
+            "Use mouse to select text for me to read",
+            "I can't read minds yet please select text for me to read",
+            "Zippity Zoppity can't find the selected property",
+            "Calculating, Calculating, Calculating, Calculating,Calculating, Nope didn't find anything"
+        ];
 // let buttonText=<span><i className="ri-play-line"></i>Read</span>;
-// var voices=[];
+var voices = synth.getVoices();
+console.log(voices.map(({ value, label }, index) =>console.log(value,label,index)));
+// console.log(voices[0].name);
 function startReading() {
     var readText=getSelectionText();
     if (readText!=="") {
@@ -16,7 +26,10 @@ function startReading() {
         utterThis.rate = 1;
         synth.speak(utterThis);
     }else{
-        alert("Please Select Text To Read");
+        utterThis = new SpeechSynthesisUtterance(botReply[Math.floor(Math.random()*botReply.length)]);
+        utterThis.pitch = 1;
+        utterThis.rate = 1;
+        synth.speak(utterThis);
     }
     
 }
@@ -53,8 +66,16 @@ function SelectRead() {
                     }
                    
                 </li>
-                <li className="list-item"><button><i className="ri-settings-3-line"></i>Settings</button></li>
+                <Popup trigger={<li className="list-item"><button><i className="ri-settings-3-line"></i>Settings</button></li>} position="top right">
+                    <div> 
+                        <select>
+                            {voices.map(({ value, label }, index) => <option value={value} key={index}>{label}</option>)}
+                        </select> 
+                    </div>
+                    
+                </Popup>
             </ul>
+           
         </div>
     );
 }
